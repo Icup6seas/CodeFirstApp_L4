@@ -1,18 +1,14 @@
-﻿namespace CodeFirstApp_L4.Models
-{
-    public enum Rating
-    {
-        E, PG, M, R
-    }
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace CodeFirstApp_L4.Models
+{
     public class Movie
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MovieID { get; set; }
-        public int GenreID { get; set; }
-        public int ActorID { get; set; }
-        public Rating? Rating { get; set; }
+        public string Title { get; set; }
 
-        public virtual Genre Genre { get; set; }
-        public virtual Actor Actor { get; set; }
+        public virtual ICollection<Summary> Summaries { get; set; }
     }
 }

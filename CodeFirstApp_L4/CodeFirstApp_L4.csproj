@@ -129,12 +129,17 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ActorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MovieController.cs" />
+    <Compile Include="Controllers\SummaryController.cs" />
+    <Compile Include="DAL\EntertainmentContext.cs" />
+    <Compile Include="DAL\EntertainmentInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Actor.cs" />
-    <Compile Include="Models\Genre.cs" />
+    <Compile Include="Models\Summary.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -277,6 +282,21 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Actor\Create.cshtml" />
+    <Content Include="Views\Actor\Delete.cshtml" />
+    <Content Include="Views\Actor\Details.cshtml" />
+    <Content Include="Views\Actor\Edit.cshtml" />
+    <Content Include="Views\Actor\Index.cshtml" />
+    <Content Include="Views\Summary\Create.cshtml" />
+    <Content Include="Views\Summary\Delete.cshtml" />
+    <Content Include="Views\Summary\Details.cshtml" />
+    <Content Include="Views\Summary\Edit.cshtml" />
+    <Content Include="Views\Summary\Index.cshtml" />
+    <Content Include="Views\Movie\Create.cshtml" />
+    <Content Include="Views\Movie\Delete.cshtml" />
+    <Content Include="Views\Movie\Details.cshtml" />
+    <Content Include="Views\Movie\Edit.cshtml" />
+    <Content Include="Views\Movie\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
