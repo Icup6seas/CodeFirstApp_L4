@@ -18,7 +18,8 @@ namespace CodeFirstApp_L4.Controllers
         // GET: Movie
         public ActionResult Index()
         {
-            return View(db.Movies.ToList()); }
+            return View(db.Movies.ToList());
+        }
 
         // GET: Movie/Details/5
         public ActionResult Details(int? id)
