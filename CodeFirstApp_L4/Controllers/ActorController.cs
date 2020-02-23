@@ -21,6 +21,39 @@ namespace CodeFirstApp_L4.Controllers
             return View(db.Actors.ToList());
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditDisplay([Bind(Include = "ID,LastName,FirstName,YearActive")] Actor actor)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(actor).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Display");
+            }
+            return View(actor);
+        }
+
+        // GET: Actor/Edit/5
+        public ActionResult EditDisplay(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Actor actor = db.Actors.Find(id);
+            if (actor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(actor);
+        }
+
+        public ActionResult Display()
+        {
+            return View(db.Actors.ToList());
+        }
+
         // GET: Actor/Details/5
         public ActionResult Details(int? id)
         {
