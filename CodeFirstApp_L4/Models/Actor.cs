@@ -15,11 +15,13 @@ namespace CodeFirstApp_L4.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Actors first name must be entered.")]
         [StringLength(20, ErrorMessage = "The first name must be less than {1} characters")]
         [Column("FirstName")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
+        [Required(ErrorMessage = "Actors active year has to be added.")]
         [Column("YearActive")]
         [Display(Name = "Year Active")]
         public DateTime YearActive { get; set; }
