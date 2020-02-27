@@ -49,13 +49,19 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MovieID,Title")] Movie movie)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Movies.Add(movie);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Movies.Add(movie);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
+            }
             return View(movie);
         }
 
@@ -85,19 +91,31 @@ namespace CodeFirstApp_L4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(movie).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(movie).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
+
             }
             return View(movie);
         }
 
         // GET: Movie/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete Failed, try again.";
             }
             Movie movie = db.Movies.Find(id);
             if (movie == null)
@@ -112,10 +130,18 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Movie movie = db.Movies.Find(id);
-            db.Movies.Remove(movie);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Movie movie = db.Movies.Find(id);
+                db.Movies.Remove(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+
         }
 
         protected override void Dispose(bool disposing)

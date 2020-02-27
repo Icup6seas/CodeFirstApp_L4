@@ -82,13 +82,19 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,LastName,FirstName,YearActive")] Actor actor)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Actors.Add(actor);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Actors.Add(actor);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
+            }
             return View(actor);
         }
 
@@ -116,19 +122,30 @@ namespace CodeFirstApp_L4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(actor).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(actor).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
             }
             return View(actor);
         }
 
         // GET: Actor/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete Failed, try again.";
             }
             Actor actor = db.Actors.Find(id);
             if (actor == null)
@@ -143,10 +160,18 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Actor actor = db.Actors.Find(id);
-            db.Actors.Remove(actor);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Actor actor = db.Actors.Find(id);
+                db.Actors.Remove(actor);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true});
+            }
+
         }
 
         protected override void Dispose(bool disposing)

@@ -52,12 +52,20 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "SummaryID,MovieID,ActorID,Rating")] Summary summary)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Summaries.Add(summary);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Summaries.Add(summary);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
+            }
+
 
             return View(summary);
         }
@@ -75,7 +83,7 @@ namespace CodeFirstApp_L4.Controllers
                 return HttpNotFound();
             }
             ViewBag.MovieID = new SelectList(db.Movies, "MovieID", "Title", summary.MovieID);
-            ViewBag.ActorID = new SelectList(db.Actors, "ID", "LastName", "FirstName",  summary.ActorID);
+            ViewBag.ActorID = new SelectList(db.Actors, "ID", "LastName", "FirstName", summary.ActorID);
             return View(summary);
         }
 
@@ -88,9 +96,17 @@ namespace CodeFirstApp_L4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(summary).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(summary).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
+
             }
             ViewBag.MovieID = new SelectList(db.Movies, "MovieID", "Title", summary.MovieID);
             ViewBag.ActorID = new SelectList(db.Actors, "ID", "LastName", "FirstName", summary.ActorID);
@@ -98,11 +114,15 @@ namespace CodeFirstApp_L4.Controllers
         }
 
         // GET: Summary/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete Failed.";
             }
             Summary summary = db.Summaries.Find(id);
             if (summary == null)
@@ -117,10 +137,18 @@ namespace CodeFirstApp_L4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Summary summary = db.Summaries.Find(id);
-            db.Summaries.Remove(summary);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Summary summary = db.Summaries.Find(id);
+                db.Summaries.Remove(summary);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true});
+            }
+
         }
 
         protected override void Dispose(bool disposing)
