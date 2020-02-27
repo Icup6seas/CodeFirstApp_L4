@@ -16,9 +16,30 @@ namespace CodeFirstApp_L4.Controllers
         private EntertainmentContext db = new EntertainmentContext();
 
         // GET: Actor
-        public ActionResult Index()
+        public ViewResult Index(string sortOrder)
         {
-            return View(db.Actors.ToList());
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Yaer";
+
+            var actors = from a in db.Actors
+                         select a;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    actors = actors.OrderByDescending(a => a.LastName);
+                    break;
+                case "Year":
+                    actors = actors.OrderBy(a => a.YearActive);
+                    break;
+                case "year_desc":
+                    actors = actors.OrderByDescending(a => a.YearActive);
+                    break;
+                default:
+                    actors = actors.OrderBy(a => a.LastName);
+                    break;
+            }
+            return View(actors.ToList());
+            //return View(db.Actors.ToList());
         }
 
         [HttpPost]

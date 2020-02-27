@@ -12,13 +12,13 @@
 <table class="table table-hover"  >
     <tr class=" text-light bg-dark">
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.NameSortParm})
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.YearActive)
+            @Html.ActionLink("Year Active", "Index", new { sortOrder = ViewBag.YearSortParm })
         </th>
     </tr>
 
