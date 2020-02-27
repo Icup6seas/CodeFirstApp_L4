@@ -16,9 +16,20 @@ namespace CodeFirstApp_L4.Controllers
         private EntertainmentContext db = new EntertainmentContext();
 
         // GET: Movie
-        public ActionResult Index()
+        //public ActionResult Index()
+        //{
+        //    return View(db.Movies.ToList());
+        //}
+
+        public ViewResult Index(string searchString)
         {
-            return View(db.Movies.ToList());
+            var movies = from m in db.Movies
+                         select m;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(m => m.Title.Contains(searchString));
+            }
+            return View(movies.ToList());
         }
 
         // GET: Movie/Details/5
@@ -107,7 +118,7 @@ namespace CodeFirstApp_L4.Controllers
         }
 
         // GET: Movie/Delete/5
-        public ActionResult Delete(int? id, bool? saveChangesError=false)
+        public ActionResult Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {

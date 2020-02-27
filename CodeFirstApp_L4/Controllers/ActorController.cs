@@ -16,13 +16,17 @@ namespace CodeFirstApp_L4.Controllers
         private EntertainmentContext db = new EntertainmentContext();
 
         // GET: Actor
-        public ViewResult Index(string sortOrder)
+        public ViewResult Index(string sortOrder, string searchString)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Yaer";
 
             var actors = from a in db.Actors
                          select a;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                actors = actors.Where(a => a.LastName.Contains(searchString) || a.FirstName.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "name_desc":
@@ -39,7 +43,6 @@ namespace CodeFirstApp_L4.Controllers
                     break;
             }
             return View(actors.ToList());
-            //return View(db.Actors.ToList());
         }
 
         [HttpPost]
