@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using CodeFirstApp_L4.DAL;
 using CodeFirstApp_L4.Models;
+using PagedList;
 
 namespace CodeFirstApp_L4.Controllers
 {
@@ -16,10 +17,21 @@ namespace CodeFirstApp_L4.Controllers
         private EntertainmentContext db = new EntertainmentContext();
 
         // GET: Actor
-        public ViewResult Index(string sortOrder, string searchString)
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Yaer";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
 
             var actors = from a in db.Actors
                          select a;
@@ -42,7 +54,9 @@ namespace CodeFirstApp_L4.Controllers
                     actors = actors.OrderBy(a => a.LastName);
                     break;
             }
-            return View(actors.ToList());
+            int pageSize = 2;
+            int pageNumber = (page ?? 1);
+            return View(actors.ToPagedList(pageNumber, pageSize));
         }
 
         [HttpPost]
