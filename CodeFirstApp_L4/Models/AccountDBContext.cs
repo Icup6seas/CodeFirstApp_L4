@@ -6,8 +6,8 @@ using System.Data.Entity;
 
 namespace CodeFirstApp_L4.Models
 {
-    public class MemberDBContext : DbContext
+    public class AccountDBContext : DbContext
     {
-        public DbSet<Membership> Members { get; set; }
+        public DbSet<UserAccount> userAccount { get; set; }
     }
 }

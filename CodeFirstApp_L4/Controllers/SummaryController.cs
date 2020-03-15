@@ -11,6 +11,7 @@ using CodeFirstApp_L4.Models;
 
 namespace CodeFirstApp_L4.Controllers
 {
+    //[Authorize]
     public class SummaryController : Controller
     {
         private EntertainmentContext db = new EntertainmentContext();

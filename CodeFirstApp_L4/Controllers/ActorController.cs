@@ -12,6 +12,7 @@ using PagedList;
 
 namespace CodeFirstApp_L4.Controllers
 {
+    //[Authorize]
     public class ActorController : Controller
     {
         private EntertainmentContext db = new EntertainmentContext();
